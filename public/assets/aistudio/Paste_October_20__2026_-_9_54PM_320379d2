@@ -1,0 +1,1226 @@
+MASTER PROMPT — BAN SPESIALIS
+
+Website Layanan Musik, Dashboard Pengguna, Sistem Antrean, dan Admin Dashboard Terintegrasi
+
+1. PERAN DAN TANGGUNG JAWAB AI
+
+Bertindaklah sebagai Senior Full-Stack Developer, UI/UX Designer, System Architect, Database Engineer, Security Engineer, dan QA Engineer profesional.
+
+Bangun sebuah website bernama Ban Spesialis, yaitu platform layanan musik yang dapat digunakan pelanggan untuk membeli musik, memesan jasa produksi atau editing audio, mengakses layanan digital, serta memantau status pesanan sampai selesai.
+
+Website wajib memiliki dua sistem berbeda tetapi terintegrasi:
+
+1. Customer Website: antarmuka publik dan dashboard pelanggan.
+2. Admin Dashboard: sistem privat untuk mengelola seluruh operasional website.
+
+Keduanya harus menggunakan backend dan database yang terintegrasi. Admin dapat mengelola produk, harga, banner, transaksi, antrean, proses pengerjaan, pengiriman melalui Gmail, serta konten website tanpa mengedit kode secara manual.
+
+Jangan hanya membuat desain visual. Implementasikan fitur yang berfungsi, termasuk autentikasi, database, validasi, penyimpanan permanen, pembatasan akses, dan sinkronisasi data.
+
+Jika proyek sudah tersedia, audit struktur dan teknologi yang digunakan sebelum mengubah apa pun. Pertahankan fitur yang sudah berfungsi dan gunakan infrastruktur yang tersedia apabila masih sesuai.
+
+⸻
+
+2. IDENTITAS VISUAL DAN REFERENSI DESAIN
+
+Gunakan gambar referensi yang diberikan sebagai acuan utama untuk bahasa visual, tekstur, warna, bentuk komponen, dan suasana desain.
+
+Penting: tiru tema visualnya, bukan layout atau susunan layar pada gambar.
+
+Gunakan gaya:
+
+3D Claymorphic + Puffy Mobile Game UI + Soft Cartoon Interface.
+
+Karakteristik desain:
+
+* Permukaan komponen membulat seperti clay, silikon lembut, atau mainan premium.
+* Tombol dengan bentuk tebal, sedikit efek timbul, dan bayangan lembut.
+* Kartu dengan sudut membulat besar dan jarak antar elemen yang nyaman.
+* Ilustrasi kartun yang ramah dan sederhana bila memang dibutuhkan.
+* Warna cerah tetapi terkontrol.
+* Hierarki informasi jelas dan mudah dibaca.
+* Desain terasa menyenangkan seperti game mobile modern, tetapi tetap terlihat profesional sebagai platform layanan musik.
+
+Palet warna
+
+Gunakan token warna yang konsisten dan dapat diubah melalui admin.
+
+* Lime Green: #8FE000
+* Fresh Green: #63C926
+* Turquoise: #8CEEDC
+* Sky Blue: #38A9F4
+* Warm Orange: #FF9B27
+* Soft Yellow: #F6E96B
+* White: #FFFFFF
+* Dark Text: #253126
+* Soft Background: #F5F8E8
+
+Warna di atas merupakan titik awal dan boleh disesuaikan untuk memperoleh kontras yang baik.
+
+Aturan komponen UI
+
+* Tombol utama: hijau cerah, bentuk membulat, teks tegas, dan efek kedalaman halus.
+* Tombol sekunder: biru atau putih dengan outline lembut.
+* Kartu layanan: warna yang bervariasi, tetapi tetap satu sistem desain.
+* Status pesanan: gunakan badge yang jelas dan mudah dibedakan.
+* Input: latar putih, border lembut, radius besar, dan label yang mudah dibaca.
+* Modal: bersih, membulat, fokus pada satu tindakan.
+* Ikon: gunakan Lucide React atau ikon sederhana dengan gaya konsisten.
+* Ilustrasi: gunakan secukupnya, terutama untuk empty state, keberhasilan pembayaran, dan penyelesaian pesanan.
+
+Hal yang harus dihindari
+
+* Jangan menyalin layout enam layar pada gambar referensi.
+* Jangan menggunakan terlalu banyak dekorasi kartun.
+* Jangan menambahkan emoji pada setiap menu.
+* Jangan menggunakan animasi ikon melompat atau berputar terus-menerus.
+* Jangan memakai gradien pada semua komponen.
+* Jangan membuat seluruh dashboard berwarna-warni secara berlebihan.
+* Jangan mengorbankan keterbacaan demi efek 3D.
+* Jangan membuat tampilan seperti dashboard admin konvensional yang kaku apabila dapat diadaptasi ke tema claymorphic.
+
+Gunakan animasi singkat sekitar 150–250 ms untuk hover, klik, transisi tab, dan perubahan status. Hormati preferensi reduced motion.
+
+Tema harus diterapkan secara konsisten pada website pelanggan dan dashboard admin, tetapi dashboard admin tetap lebih minimalis, padat informasi, dan efisien untuk pekerjaan operasional.
+
+⸻
+
+3. TEKNOLOGI DAN ARSITEKTUR
+
+Gunakan teknologi berikut apabila sesuai dengan proyek yang tersedia:
+
+* Frontend: Next.js dengan App Router dan TypeScript.
+* Styling: Tailwind CSS.
+* UI components: shadcn/ui yang dikustomisasi menjadi claymorphic.
+* Ikon: Lucide React.
+* Form: React Hook Form dan Zod.
+* Database: PostgreSQL melalui Supabase.
+* Autentikasi: Supabase Auth atau implementasi server-side yang setara.
+* Penyimpanan media: Supabase Storage.
+* Grafik: Recharts.
+* Email: layanan transactional email yang mendukung verifikasi dan pengiriman notifikasi.
+* Pembayaran: payment gateway yang benar-benar tersedia dan terkonfigurasi.
+* Deployment: platform hosting modern yang mendukung Next.js.
+
+Pisahkan tanggung jawab menjadi:
+
+1. Presentation layer.
+2. Business logic.
+3. API atau server actions.
+4. Database access.
+5. Authentication dan authorization.
+6. Background jobs atau sistem notifikasi jika diperlukan.
+
+Jangan menaruh secret key di frontend. Gunakan environment variables dan validasi data di server.
+
+⸻
+
+4. HALAMAN AWAL DAN REGISTRASI PENGGUNA
+
+Website publik tidak mewajibkan pengunjung membuat akun sebelum melihat halaman beranda. Namun, sebelum masuk ke dashboard pelanggan atau melakukan pemesanan, pengguna harus mempunyai akun.
+
+Pada kunjungan pertama, tampilkan halaman sambutan dengan desain claymorphic yang sederhana.
+
+Teks utama:
+
+“Halo, selamat datang di Ban Spesialis. Silakan masukkan alamat Gmail Anda untuk melanjutkan.”
+
+Sediakan:
+
+* Input alamat Gmail.
+* Tombol “Lanjutkan”.
+* Validasi format email.
+* Pesan kesalahan yang jelas.
+* Loading state ketika memproses permintaan.
+
+Gunakan alamat Gmail sebagai identitas akun yang unik. Jika memungkinkan, batasi pendaftaran pada alamat Gmail sesuai kebutuhan bisnis. Jangan menganggap semua alamat email yang berakhiran gmail.com otomatis telah terverifikasi.
+
+Alur registrasi
+
+1. Pengguna memasukkan alamat Gmail.
+2. Sistem menormalisasi email, memeriksa format, dan mencari apakah email sudah terdaftar.
+3. Jika email belum ada, sistem mengirimkan OTP atau tautan verifikasi ke email tersebut.
+4. Pengguna memverifikasi kepemilikan email.
+5. Setelah berhasil, pengguna membuat PIN empat digit.
+6. Pengguna mengonfirmasi PIN.
+7. Sistem menyimpan akun ke database.
+8. Pengguna masuk ke dashboard pelanggan.
+
+Jangan menyimpan akun baru sebagai akun terverifikasi sebelum proses pembuktian kepemilikan email selesai.
+
+Jika email sudah terdaftar
+
+Tampilkan pesan:
+
+“Email ini sudah terdaftar di database kami. Apakah ini akun Anda? Silakan verifikasi email untuk melanjutkan.”
+
+Sediakan tombol:
+
+* “Ya, ini akun saya”.
+* “Gunakan email lain”.
+
+Setelah verifikasi kepemilikan email, pengguna memasukkan PIN empat digit untuk masuk.
+
+Jika PIN salah, tampilkan pesan yang jelas. Terapkan rate limiting, penundaan bertahap, dan pembatasan percobaan untuk mencegah tebakan PIN.
+
+Jangan mengungkapkan informasi sensitif tentang akun kepada orang yang belum membuktikan kepemilikan email.
+
+Ketentuan PIN
+
+* PIN terdiri atas tepat empat digit, termasuk angka nol di depan.
+* Simpan PIN dalam kolom khusus yang terpisah dari alamat email.
+* Simpan hanya hash PIN menggunakan algoritma password hashing yang sesuai, seperti Argon2id atau bcrypt dengan konfigurasi yang aman.
+* Jangan menyimpan PIN dalam bentuk teks biasa.
+* Jangan menampilkan PIN kembali kepada admin.
+* Jangan mencatat PIN di log, analytics, URL, atau pesan kesalahan.
+* Gunakan autentikasi server-side dan sesi aman setelah verifikasi.
+* Sediakan mekanisme pemulihan PIN melalui verifikasi email.
+* Hapus sesi ketika pengguna logout.
+
+Email dan hash PIN harus disimpan secara terpisah secara logis di database. Jangan membuat tabel duplikat yang tidak diperlukan.
+
+Contoh struktur:
+
+* profiles: ID pengguna, email, waktu pendaftaran, status akun.
+* user_credentials: ID pengguna, hash PIN, waktu perubahan PIN.
+* email_verifications: token atau OTP terproteksi, masa berlaku, status penggunaan.
+
+Terapkan unique constraint pada email yang telah dinormalisasi.
+
+Penting: PIN empat digit sendiri memiliki ruang kombinasi yang kecil. Verifikasi email, rate limiting, pengamanan sesi, dan pemulihan akun wajib digunakan agar PIN tidak menjadi satu-satunya perlindungan.
+
+⸻
+
+5. DASHBOARD UTAMA PENGGUNA
+
+Setelah login, pengguna diarahkan ke dashboard pelanggan.
+
+Gunakan layout mobile-first yang bersih, dengan header sederhana, konten berbentuk kartu, dan navigasi bawah yang selalu mudah dijangkau.
+
+A. Header
+
+Tampilkan:
+
+* Watermark atau identitas brand “Ban Spesialis”.
+* Sapaan kepada pengguna.
+* Ikon notifikasi.
+* Akses profil pengguna.
+
+Jangan tampilkan email lengkap secara berlebihan apabila tidak diperlukan.
+
+B. Banner carousel
+
+Buat tiga banner utama yang dapat digeser secara horizontal.
+
+Setiap banner memiliki:
+
+* Gambar atau ilustrasi.
+* Judul.
+* Deskripsi singkat.
+* Tombol tindakan.
+* Status aktif/nonaktif.
+
+Contoh tema banner:
+
+1. Produksi dan editing musik.
+2. Paket layanan musik.
+3. Kelas privat dan layanan premium.
+
+Banner dikelola melalui Admin Dashboard. Admin dapat menambahkan, mengedit, menghapus, mengganti urutan, mengatur jadwal, dan menentukan tujuan tombol.
+
+Jangan menampilkan banner yang sudah kedaluwarsa atau berstatus nonaktif.
+
+C. Kartu promosi dan paket
+
+Di bawah banner, tampilkan tiga kartu promosi yang dapat digeser secara horizontal.
+
+Kartu harus relatif besar, mempunyai warna berbeda yang harmonis, dan menggunakan desain claymorphic.
+
+Setiap kartu menampilkan:
+
+* Nama paket.
+* Harga.
+* Ringkasan manfaat.
+* Label paket jika diperlukan.
+* Tombol “Lihat Detail” atau “Pesan Sekarang”.
+
+Jangan mengisi kartu dengan terlalu banyak teks. Detail lengkap ditampilkan pada halaman paket.
+
+Harga dan manfaat harus dibaca dari database, bukan ditulis permanen di frontend.
+
+D. Navigasi bawah pengguna
+
+Buat bottom navigation dengan lima menu utama:
+
+1. Beranda — halaman utama pelanggan.
+2. Layanan — katalog musik, jasa, dan kelas.
+3. Riwayat — aktivitas yang pernah dilihat atau dibuka.
+4. Transaksi — pesanan, pembayaran, dan antrean.
+5. Profil — data akun, pengaturan PIN, dan bantuan.
+
+Gunakan ikon sederhana dengan label teks. Tampilkan indikator menu aktif yang jelas.
+
+Navigasi bawah harus tetap tersedia pada halaman utama dashboard pelanggan di perangkat mobile. Pada halaman yang membutuhkan ruang penuh, seperti checkout atau formulir panjang, navigasi dapat disesuaikan agar tidak mengganggu pekerjaan.
+
+Pada desktop, navigasi boleh diadaptasi menjadi sidebar atau top navigation yang responsif, tanpa mengubah fungsi menunya.
+
+Jangan menampilkan menu Admin pada navigasi pengguna.
+
+⸻
+
+6. KATALOG LAYANAN MUSIK
+
+Buat halaman katalog yang menampilkan produk dan layanan yang tersedia.
+
+Kategori dapat meliputi:
+
+* Pembelian musik digital.
+* Jasa editing audio.
+* Mixing dan mastering.
+* Sound editing untuk pentas seni.
+* Pembuatan transisi antarlagu.
+* Produksi musik sesuai kebutuhan.
+* Kelas privat musik.
+* Layanan digital lain yang dikelola admin.
+
+Kategori di atas merupakan opsi awal dan harus dapat diubah melalui dashboard admin.
+
+Setiap produk atau layanan memiliki:
+
+* ID produk.
+* Nama.
+* Kategori.
+* Deskripsi.
+* Gambar atau thumbnail.
+* Harga.
+* Manfaat.
+* Estimasi pengerjaan jika relevan.
+* Batas revisi jika relevan.
+* Ketentuan komersial.
+* Status ketersediaan.
+* Status publikasi.
+
+Buat pencarian, filter kategori, dan halaman detail layanan.
+
+Jangan menampilkan produk nonaktif pada katalog publik.
+
+⸻
+
+7. PAKET LAYANAN DAN HARGA
+
+Buat dua paket utama yang dapat dikelola admin.
+
+Paket A — Basic
+
+Harga awal: Rp50.000
+
+Benefit yang disarankan:
+
+1. Satu layanan sesuai deskripsi paket.
+2. Tiga kali revisi sesuai ruang lingkup yang disepakati.
+3. Hasil akhir dalam format digital yang ditentukan.
+4. Dapat dikomersialkan sesuai lisensi atau perjanjian yang diberikan.
+5. Komunikasi melalui pusat bantuan.
+6. Pembaruan status pengerjaan.
+7. Nomor antrean otomatis.
+8. Riwayat transaksi yang tersimpan.
+9. Pemberitahuan saat pesanan mengalami perubahan status.
+10. Pengiriman hasil melalui Gmail yang terdaftar.
+
+Batasan:
+
+* Tidak memperoleh akses ke proyek sumber atau file project pembuatan.
+* Tidak termasuk layanan tambahan yang tidak tercantum pada detail paket.
+* Hak komersial harus dijelaskan secara tertulis agar pengguna mengetahui batas penggunaannya.
+
+Paket B — Premium
+
+Harga awal: Rp200.000
+
+Paket ini menawarkan akses dan manfaat lebih lengkap.
+
+Manfaat yang dapat disediakan:
+
+1. Seluruh manfaat dasar yang relevan.
+2. Akses ke file proyek sumber yang termasuk dalam pesanan.
+3. Jumlah revisi lebih besar atau sesuai ketentuan paket.
+4. Prioritas antrean sesuai aturan operasional.
+5. Detail progres pengerjaan yang lebih lengkap.
+6. Komunikasi untuk klarifikasi proyek.
+7. Opsi format file tambahan.
+8. Penyimpanan riwayat hasil pesanan.
+9. Pengiriman hasil melalui Gmail.
+10. Pemberitahuan perubahan status.
+11. Ringkasan pengerjaan.
+12. Dokumentasi hasil akhir.
+13. Pemeriksaan kualitas tambahan.
+14. Opsi penyesuaian hasil yang termasuk dalam ruang lingkup paket.
+15. Akses ke file pendukung yang disepakati.
+16. Hak penggunaan komersial sesuai lisensi tertulis.
+17. Dukungan pascapengiriman sesuai ketentuan.
+18. Prioritas layanan jika kapasitas dan kebijakan antrean mengizinkan.
+
+Tentukan jumlah revisi, durasi dukungan, format file, dan ruang lingkup secara eksplisit di database. Jangan menjanjikan manfaat yang belum mampu disediakan.
+
+Harga, benefit, deskripsi, dan status kedua paket harus dapat diedit admin tanpa perubahan kode.
+
+Ketentuan: harga di atas adalah nilai awal, bukan nilai yang ditanam permanen di frontend. Setiap perubahan harga berlaku untuk pesanan baru. Pesanan yang telah dikonfirmasi harus mempertahankan snapshot harga dan manfaat saat checkout.
+
+⸻
+
+8. PROSES PEMESANAN DAN CHECKOUT
+
+Buat alur pemesanan yang sederhana dan jelas.
+
+1. Pengguna memilih produk atau paket.
+2. Pengguna membuka detail.
+3. Pengguna mengisi formulir pemesanan.
+4. Sistem memvalidasi data.
+5. Pengguna memeriksa ringkasan pesanan.
+6. Pengguna memilih metode pembayaran yang tersedia.
+7. Sistem membuat pesanan dengan status menunggu pembayaran.
+8. Setelah pembayaran diverifikasi oleh payment gateway, pesanan ditandai berhasil dibayar.
+9. Sistem membuat nomor antrean secara otomatis.
+10. Pesanan muncul di dashboard pengguna dan Admin Dashboard.
+
+Formulir pemesanan dapat mencakup:
+
+* Nama proyek.
+* Jenis layanan.
+* Deskripsi kebutuhan.
+* Referensi audio.
+* File pendukung.
+* Catatan tambahan.
+* Alamat Gmail penerima hasil.
+* Pilihan paket.
+* Informasi lain sesuai kebutuhan layanan.
+
+Jangan meminta data yang tidak diperlukan.
+
+Validasi ukuran, tipe, dan isi file yang diunggah. Simpan file di penyimpanan privat dan berikan akses sesuai hak pengguna.
+
+Pembayaran
+
+Pisahkan status pesanan dari status pembayaran.
+
+Contoh status pembayaran:
+
+* pending
+* paid
+* failed
+* expired
+* cancelled
+* refunded
+
+Status pembayaran berhasil hanya boleh ditetapkan setelah diverifikasi melalui callback atau webhook tepercaya dari penyedia pembayaran.
+
+Validasi tanda tangan webhook, referensi transaksi, nominal, mata uang, dan idempotensi. Jangan menganggap pengguna telah membayar hanya karena membuka halaman sukses.
+
+Jika payment gateway belum terhubung, tampilkan status integrasi belum tersedia dan dokumentasikan konfigurasi yang diperlukan. Jangan membuat transaksi sukses palsu.
+
+⸻
+
+9. SISTEM RIWAYAT PENGGUNA
+
+Halaman Riwayat mencatat aktivitas pengguna yang relevan.
+
+Informasi yang ditampilkan:
+
+* Produk atau layanan terakhir dilihat.
+* Waktu terakhir dibuka.
+* Riwayat halaman yang relevan.
+* Aktivitas pemesanan.
+* Link untuk membuka kembali produk atau layanan.
+* Filter berdasarkan kategori atau waktu jika diperlukan.
+
+Setiap aktivitas harus terkait dengan akun pengguna yang benar.
+
+Gunakan event seperti:
+
+* product_viewed
+* service_viewed
+* banner_clicked
+* order_created
+* checkout_started
+
+Hindari pencatatan setiap klik yang tidak bermakna. Jangan menyimpan informasi sensitif dalam log aktivitas.
+
+Pengguna hanya boleh melihat riwayat miliknya sendiri.
+
+Jika belum ada riwayat, tampilkan empty state dengan teks:
+
+“Belum ada riwayat aktivitas. Jelajahi layanan Ban Spesialis untuk memulai.”
+
+⸻
+
+10. HALAMAN TRANSAKSI
+
+Halaman Transaksi menampilkan seluruh pesanan pengguna yang sedang login.
+
+Sediakan filter:
+
+* Semua transaksi.
+* Menunggu pembayaran.
+* Pembayaran berhasil.
+* Sedang dalam antrean.
+* Sedang dikerjakan.
+* Pemeriksaan kualitas.
+* Revisi.
+* Selesai.
+* Dikirim.
+* Dibatalkan atau dikembalikan dananya.
+
+Setiap kartu transaksi menampilkan:
+
+* Nomor pesanan.
+* Nomor antrean jika sudah terbentuk.
+* Nama produk atau layanan.
+* Harga.
+* Tanggal pemesanan.
+* Status pembayaran.
+* Status pengerjaan.
+* Status pengiriman.
+* Tombol “Lihat Detail”.
+
+Detail transaksi memuat timeline, riwayat perubahan status, informasi pembayaran, dan tombol bantuan.
+
+Gunakan database untuk seluruh informasi transaksi. Jangan membuat status hanya berubah di frontend tanpa tersimpan ke server.
+
+⸻
+
+11. SISTEM ANTREAN OTOMATIS
+
+Buat sistem antrean yang terintegrasi dengan database.
+
+Nomor antrean:
+
+* Pesanan berbayar pertama: #BANDLAB
+* Pesanan berikutnya: #BANDLAB1
+* Berikutnya: #BANDLAB2
+* Dan seterusnya.
+
+Jika antrean kosong, pesanan berbayar pertama memperoleh nomor pertama.
+
+Jika ada pesanan lain dalam antrean, pesanan baru memperoleh nomor berikutnya berdasarkan urutan pembayaran yang berhasil diverifikasi.
+
+Terapkan ketentuan:
+
+1. Nomor antrean hanya dibuat setelah pembayaran terverifikasi.
+2. Setiap pesanan hanya memperoleh satu nomor antrean.
+3. Proses alokasi nomor harus aman terhadap transaksi bersamaan.
+4. Gunakan database transaction, unique constraint, dan mekanisme penguncian atau sequence yang sesuai.
+5. Jangan menggunakan jumlah baris saat ini sebagai satu-satunya dasar penomoran karena dapat menimbulkan nomor duplikat.
+6. Pesanan yang dibatalkan tidak menyebabkan nomor pesanan lain berubah.
+7. Simpan waktu pembayaran, waktu masuk antrean, dan posisi antrean.
+8. Catat perubahan prioritas secara transparan.
+9. Admin dapat mengatur prioritas melalui aturan yang jelas dan tercatat dalam audit log.
+
+Pisahkan nomor antrean dari ID internal pesanan.
+
+Jika pelanggan memilih paket Premium dengan prioritas, tampilkan ketentuan prioritas secara jelas. Prioritas tidak boleh menyebabkan nomor antrean yang telah diterbitkan berubah secara diam-diam.
+
+Pada dashboard pengguna, tampilkan:
+
+* Nomor antrean.
+* Posisi antrean.
+* Jumlah pesanan yang berada di depan.
+* Status pesanan.
+* Estimasi waktu jika data operasional mendukung.
+* Informasi bahwa estimasi dapat berubah sesuai beban pengerjaan.
+
+Jangan menjanjikan estimasi waktu pasti apabila data belum memadai.
+
+⸻
+
+12. TRACK STATUS PENGERJAAN
+
+Buat halaman detail pesanan dengan timeline visual berbentuk stepper.
+
+Gunakan komponen claymorphic yang lembut, tetapi tetap mudah dipahami.
+
+Tahapan pengerjaan:
+
+Tahap 1 — Pembayaran Selesai
+
+Judul: “Pembayaran Berhasil”
+
+Deskripsi:
+
+“Pembayaran Anda telah berhasil diverifikasi. Pesanan sudah tercatat di sistem dan akan diproses sesuai urutan antrean. Mohon menunggu dan periksa halaman ini secara berkala untuk mendapatkan pembaruan.”
+
+Status internal: paid_queued
+
+Tahap 2 — Dalam Antrean
+
+Judul: “Menunggu Giliran”
+
+Deskripsi:
+
+“Pesanan Anda sudah masuk antrean. Tim kami akan mulai mengerjakan pesanan ketika giliran Anda tiba.”
+
+Status internal: queued
+
+Tahap 3 — Proses Pengerjaan
+
+Judul: “Sedang Dikerjakan”
+
+Deskripsi:
+
+“Tim kami sedang mengerjakan pesanan Anda sesuai detail dan kebutuhan yang telah dikirimkan.”
+
+Status internal: in_progress
+
+Estimasi waktu ditentukan admin atau dihitung berdasarkan data operasional.
+
+Tahap 4 — Pemeriksaan Kualitas
+
+Judul: “Quality Control”
+
+Deskripsi:
+
+“Hasil pengerjaan sedang diperiksa untuk memastikan kualitas audio, kelengkapan file, dan kesesuaian dengan permintaan Anda.”
+
+Estimasi awal: sekitar 10–20 menit jika sesuai kondisi pekerjaan.
+
+Status internal: quality_control
+
+Tahap 5 — Revisi Quality Control
+
+Judul: “Penyempurnaan Hasil”
+
+Deskripsi:
+
+“Tim kami sedang melakukan penyesuaian berdasarkan hasil pemeriksaan kualitas sebelum hasil akhir disiapkan.”
+
+Estimasi awal: sekitar 30 menit, tergantung kebutuhan perbaikan.
+
+Status internal: qc_revision
+
+Tahap 6 — Pemeriksaan Human Error
+
+Judul: “Pemeriksaan Akhir”
+
+Deskripsi:
+
+“Kami memeriksa kembali hasil pengerjaan untuk memastikan tidak ada kesalahan manusia, termasuk nada yang tidak sesuai, bagian audio yang terlewat, kesalahan pemotongan, atau ketidaksesuaian lain dengan instruksi Anda.”
+
+Status internal: final_review
+
+Tahap 7 — Packing
+
+Judul: “Menyiapkan File”
+
+Deskripsi:
+
+“Hasil akhir sedang disiapkan, diperiksa kelengkapannya, dan dikemas untuk dikirim ke alamat Gmail yang terdaftar.”
+
+Status internal: packing
+
+Tahap 8 — Pengiriman
+
+Judul: “Dikirim melalui Gmail”
+
+Deskripsi:
+
+“Hasil pesanan telah dikirim ke alamat Gmail yang Anda daftarkan. Silakan periksa kotak masuk, folder Spam, dan folder lain apabila email belum terlihat.”
+
+Status internal: sent
+
+Sediakan tombol “Buka Gmail” yang mengarahkan pengguna ke Gmail.
+
+Gunakan link Gmail yang valid, misalnya https://mail.google.com/.
+
+Tombol tersebut hanya membuka Gmail. Tombol tidak boleh dianggap sebagai bukti bahwa email sudah terkirim.
+
+Tahap 9 — Selesai
+
+Judul: “Pesanan Selesai”
+
+Deskripsi:
+
+“Pesanan telah diselesaikan dan hasil pengiriman sudah dicatat oleh sistem. Jika Anda belum menerima email, silakan periksa folder Spam atau hubungi Customer Service.”
+
+Status internal: completed
+
+Status selesai dan status pengiriman harus dipisahkan agar admin dapat mencatat apakah pesanan telah selesai dikerjakan, telah dikirim, dan telah dikonfirmasi diterima.
+
+Aturan timeline
+
+* Tahap yang sudah selesai ditampilkan sebagai completed.
+* Tahap aktif diberi penanda yang jelas.
+* Tahap berikutnya ditampilkan sebagai pending.
+* Waktu perubahan status dicatat.
+* Deskripsi setiap tahap dapat dikonfigurasi admin.
+* Admin dapat menambahkan catatan yang terlihat oleh pengguna.
+* Catatan internal admin tidak boleh terlihat oleh pengguna.
+* Setiap perubahan status disimpan di database dan tercatat dalam riwayat.
+* Gunakan polling atau realtime subscription bila tersedia dan diperlukan.
+* Jangan memajukan status secara otomatis hanya berdasarkan berlalunya waktu jika pekerjaan belum benar-benar selesai.
+
+⸻
+
+13. SISTEM PENGIRIMAN VIA GMAIL
+
+Buat modul pengiriman hasil yang dapat digunakan admin.
+
+Informasi pengiriman:
+
+* ID pengiriman.
+* ID pesanan.
+* Alamat penerima.
+* Subjek email.
+* Isi email.
+* Daftar lampiran atau tautan unduhan.
+* Status pengiriman.
+* Waktu pengiriman.
+* ID pesan dari penyedia email jika tersedia.
+* Pesan kesalahan jika pengiriman gagal.
+
+Status pengiriman:
+
+* draft
+* queued
+* sending
+* sent
+* failed
+* delivery_unknown
+
+Gunakan provider email yang benar-benar terintegrasi.
+
+Ketika admin menekan “Kirim Hasil”, sistem mengirimkan email melalui backend, bukan dari browser secara langsung.
+
+Setelah provider mengonfirmasi bahwa email berhasil diterima untuk diproses, status dapat diubah menjadi sent. Jika tersedia, gunakan webhook provider untuk memperbarui status delivery atau bounce.
+
+Jangan menyamakan status sent dengan kepastian bahwa email sudah dibaca atau masuk ke inbox.
+
+Simpan log pengiriman untuk mencegah pengiriman duplikat. Sediakan fungsi kirim ulang yang aman jika terjadi kegagalan.
+
+Contoh pesan email:
+
+Subjek: Hasil Pesanan Ban Spesialis — [Nomor Pesanan]
+
+Isi:
+
+“Halo,
+
+Pesanan Anda telah selesai diproses.
+
+Nomor pesanan: [Nomor Pesanan]
+Nomor antrean: [Nomor Antrean]
+Layanan: [Nama Layanan]
+
+Hasil pesanan dapat diakses melalui lampiran atau tautan unduhan yang tersedia pada email ini.
+
+Terima kasih telah menggunakan Ban Spesialis.”
+
+Pastikan file hanya dapat diakses oleh penerima yang berhak. Untuk file besar, gunakan tautan unduhan privat dengan masa berlaku yang sesuai.
+
+Pada halaman pengguna, tampilkan:
+
+“Jika hasil belum muncul, periksa folder Spam, Promosi, atau folder lain di Gmail Anda. Jika masih belum ditemukan, silakan hubungi Customer Service.”
+
+⸻
+
+14. CUSTOMER SERVICE CENTER
+
+Sediakan akses Customer Service di bagian bawah halaman bantuan dan detail transaksi.
+
+Fitur:
+
+* Tombol “Customer Service Center”.
+* FAQ.
+* Panduan pembayaran.
+* Panduan status pesanan.
+* Panduan pengiriman hasil.
+* Formulir bantuan.
+* Nomor pesanan yang dapat disertakan otomatis.
+* Link ke kanal dukungan yang benar-benar tersedia.
+
+Kanal kontak, alamat email dukungan, dan jam operasional harus dapat diubah admin.
+
+Jangan menampilkan tombol yang mengarah ke kontak fiktif.
+
+Jika fitur tiket bantuan diimplementasikan, gunakan nomor tiket, status tiket, waktu pembuatan, percakapan, dan pembatasan akses berdasarkan pengguna.
+
+⸻
+
+15. ADMIN DASHBOARD — SISTEM TERPISAH
+
+Bangun Admin Dashboard sebagai aplikasi operasional privat yang menggunakan backend dan database yang sama dengan website utama.
+
+Contoh URL:
+
+* Website pelanggan: /
+* Login administrator: /admin/login
+* Dashboard administrator: /admin
+* Website Management: /admin/website
+* Produk dan layanan: /admin/products
+* Pengguna: /admin/users
+* Pesanan: /admin/orders
+* Transaksi: /admin/transactions
+* Antrean: /admin/queue
+* Pengerjaan: /admin/production
+* Pengiriman: /admin/deliveries
+* Konten: /admin/content
+* Analitik: /admin/analytics
+* Notifikasi: /admin/notifications
+* Pengaturan: /admin/settings
+* Hak akses: /admin/roles
+* Audit log: /admin/activity-logs
+
+Jangan menampilkan menu Admin di bottom navigation pengguna, beranda publik, katalog, atau halaman profil pelanggan.
+
+Halaman admin harus diproteksi oleh autentikasi dan pemeriksaan izin di server. Menyembunyikan link saja tidak cukup.
+
+Gunakan login admin yang terpisah dari login pelanggan, dengan peran dan sesi yang sesuai.
+
+Jika pelanggan membuka URL admin tanpa hak akses, arahkan ke halaman login admin atau tampilkan halaman akses ditolak.
+
+Jangan memberikan hak administrator kepada pengguna hanya karena mengetahui URL tertentu.
+
+⸻
+
+16. DESAIN ADMIN DASHBOARD
+
+Admin Dashboard menggunakan tema claymorphic yang sama, tetapi lebih minimalis dan profesional.
+
+Layout desktop:
+
+* Sidebar kiri untuk navigasi.
+* Topbar dengan pencarian, notifikasi, dan profil administrator.
+* Breadcrumb.
+* Kartu statistik.
+* Tabel operasional.
+* Panel detail.
+* Modal konfirmasi.
+* Grafik bila relevan.
+
+Layout mobile:
+
+* Navigasi ringkas.
+* Sidebar dapat berubah menjadi drawer.
+* Tabel menjadi kartu atau tampilan responsif.
+* Tombol tindakan mudah dijangkau.
+* Form tidak terpotong.
+* Tidak ada horizontal overflow yang tidak diperlukan.
+
+Gunakan latar netral, kartu putih atau warna lembut, dan aksen hijau atau biru pada tindakan utama.
+
+Jangan menggunakan efek 3D berat pada tabel data, grafik, dan formulir yang harus dibaca cepat.
+
+Sediakan:
+
+* Loading skeleton.
+* Empty state.
+* Error state.
+* Toast notification.
+* Konfirmasi sebelum penghapusan.
+* Pencarian dan filter.
+* Sorting dan pagination.
+* Dark mode dan light mode jika memungkinkan.
+
+⸻
+
+17. MODUL OVERVIEW ADMIN
+
+Halaman overview menampilkan data aktual.
+
+Kartu statistik:
+
+* Total pengguna terdaftar.
+* Pengguna baru.
+* Total produk dan layanan aktif.
+* Total pesanan.
+* Pesanan menunggu pembayaran.
+* Pembayaran terverifikasi.
+* Pesanan dalam antrean.
+* Pesanan dalam pengerjaan.
+* Pesanan selesai.
+* Pengiriman berhasil.
+* Pendapatan dari pembayaran yang valid.
+
+Tambahkan:
+
+* Grafik pesanan berdasarkan periode.
+* Grafik pendapatan berdasarkan periode.
+* Pesanan terbaru.
+* Pesanan yang membutuhkan tindakan admin.
+* Antrean yang sedang berjalan.
+* Pengiriman yang gagal.
+* Aktivitas admin terbaru.
+
+Sediakan filter harian, mingguan, bulanan, dan tahunan.
+
+Jangan menggunakan angka contoh seolah-olah angka tersebut merupakan data aktual. Jika database kosong, tampilkan nilai nol dan empty state.
+
+Pendapatan hanya dihitung dari pembayaran yang telah diverifikasi dan harus mengikuti aturan pengembalian dana yang berlaku.
+
+⸻
+
+18. WEBSITE MANAGEMENT
+
+Admin dapat mengelola konten website utama.
+
+Fitur:
+
+* Mengubah nama dan identitas brand.
+* Mengunggah logo dan favicon.
+* Mengubah warna tema.
+* Mengelola tiga banner utama atau jumlah banner yang dikonfigurasi.
+* Mengelola kartu promosi.
+* Mengubah teks sambutan.
+* Mengelola judul dan deskripsi.
+* Mengatur tombol CTA.
+* Mengatur link tujuan.
+* Mengelola halaman FAQ dan bantuan.
+* Mengelola informasi kontak.
+* Mengelola footer.
+* Mengatur SEO title dan meta description.
+* Menyimpan sebagai draft.
+* Preview sebelum publikasi.
+* Mempublikasikan atau menonaktifkan konten.
+
+Perubahan harus disimpan ke database dan dibaca oleh website utama.
+
+Sediakan validasi agar admin tidak dapat mempublikasikan banner tanpa informasi penting atau URL yang valid.
+
+⸻
+
+19. PRODUCT & SERVICE MANAGEMENT
+
+Admin dapat:
+
+* Menambahkan produk atau layanan.
+* Mengedit nama dan deskripsi.
+* Mengubah harga.
+* Mengubah manfaat paket.
+* Mengunggah gambar.
+* Mengatur kategori.
+* Mengatur urutan tampil.
+* Mengatur diskon jika didukung.
+* Menentukan layanan unggulan.
+* Mengaktifkan atau menonaktifkan produk.
+* Mengarsipkan produk.
+* Menentukan estimasi pengerjaan.
+* Menentukan jumlah revisi.
+* Mengatur ketentuan lisensi dan hak komersial.
+* Mengelola opsi paket.
+* Mengatur prioritas antrean sesuai kebijakan.
+
+Setiap produk memiliki ID stabil.
+
+Perubahan harga tidak boleh mengubah transaksi lama. Simpan snapshot nama, harga, benefit, dan ketentuan paket saat pesanan dibuat.
+
+Produk yang telah digunakan dalam transaksi sebaiknya diarsipkan daripada dihapus permanen.
+
+⸻
+
+20. USER MANAGEMENT
+
+Admin dapat:
+
+* Melihat daftar pengguna.
+* Mencari berdasarkan email atau ID.
+* Memfilter berdasarkan tanggal pendaftaran.
+* Melihat status akun.
+* Melihat riwayat pesanan sesuai izin.
+* Melihat tanggal pendaftaran dan aktivitas yang relevan.
+* Menonaktifkan akun sesuai kebijakan.
+* Memulihkan akun yang dinonaktifkan jika diizinkan.
+* Mengelola pengiriman notifikasi.
+* Mengekspor data yang memang diperlukan dan diizinkan.
+
+Jangan pernah menampilkan PIN, hash PIN, token verifikasi, password, atau secret key kepada admin.
+
+Jika admin membantu pemulihan akun, gunakan alur reset PIN yang aman. Admin tidak boleh mengetahui PIN lama pengguna.
+
+Catat tindakan sensitif dalam audit log.
+
+⸻
+
+21. ORDER MANAGEMENT
+
+Admin dapat melihat seluruh pesanan yang dapat diakses berdasarkan izin.
+
+Setiap pesanan memiliki:
+
+* Nomor pesanan.
+* ID pelanggan.
+* Produk atau layanan.
+* Snapshot harga.
+* Status pembayaran.
+* Status pengerjaan.
+* Status pengiriman.
+* Nomor antrean.
+* Waktu pemesanan.
+* Waktu pembayaran.
+* Estimasi pengerjaan.
+* Catatan pelanggan.
+* Riwayat status.
+
+Fitur:
+
+* Pencarian pesanan.
+* Filter status.
+* Filter tanggal.
+* Filter produk.
+* Melihat detail pesanan.
+* Memperbarui status.
+* Menambahkan catatan internal.
+* Menambahkan catatan untuk pelanggan.
+* Mengelola estimasi pengerjaan.
+* Melihat riwayat status.
+* Membatalkan pesanan sesuai kebijakan.
+* Mengelola pengembalian dana jika payment gateway mendukungnya.
+* Mengunduh invoice atau ringkasan transaksi.
+
+Validasi setiap perubahan status di server. Jangan membiarkan admin melompati tahapan yang wajib tanpa izin khusus dan alasan yang tercatat.
+
+⸻
+
+22. QUEUE MANAGEMENT
+
+Buat halaman antrean khusus admin.
+
+Tampilkan:
+
+* Nomor antrean.
+* Nomor pesanan.
+* Nama layanan.
+* Pelanggan.
+* Waktu pembayaran.
+* Posisi antrean.
+* Prioritas.
+* Status pengerjaan.
+* Estimasi waktu.
+* Tindakan yang tersedia.
+
+Admin dapat:
+
+* Memulai pengerjaan.
+* Memperbarui posisi sesuai aturan.
+* Menyesuaikan prioritas dengan alasan.
+* Menunda pengerjaan.
+* Menandai antrean selesai.
+* Melihat riwayat perubahan.
+* Memfilter antrean aktif dan selesai.
+
+Jangan mengubah nomor antrean yang telah diterbitkan hanya untuk menyesuaikan urutan tampilan.
+
+Simpan posisi antrean dan nomor tiket sebagai data yang berbeda.
+
+⸻
+
+23. PRODUCTION MANAGEMENT
+
+Buat modul khusus untuk mengelola proses pengerjaan.
+
+Admin atau staf yang berwenang dapat memperbarui status:
+
+1. Pembayaran selesai.
+2. Menunggu antrean.
+3. Sedang dikerjakan.
+4. Quality control.
+5. Revisi quality control.
+6. Pemeriksaan human error.
+7. Packing.
+8. Siap dikirim.
+9. Dikirim.
+10. Selesai.
+
+Fitur tambahan:
+
+* Catatan pengerjaan internal.
+* Lampiran referensi.
+* Checklist QC.
+* Estimasi waktu.
+* Riwayat perubahan.
+* Nama staf yang mengubah status.
+* Waktu mulai dan selesai.
+* Alasan penundaan.
+* Catatan untuk pelanggan.
+
+Sediakan checklist pemeriksaan akhir, seperti:
+
+* Format file sesuai pesanan.
+* Nama file benar.
+* Bagian audio tidak terpotong secara tidak sengaja.
+* Transisi audio sesuai instruksi.
+* Tidak ada bagian yang terlewat.
+* File dapat dibuka.
+* File final sesuai paket.
+* Lampiran atau tautan unduhan benar.
+
+Jangan menandai pesanan selesai jika langkah wajib belum terpenuhi, kecuali terdapat izin khusus dan alasan yang tercatat.
+
+⸻
+
+24. DELIVERY MANAGEMENT
+
+Buat halaman pengiriman hasil.
+
+Admin dapat:
+
+* Memilih pesanan yang siap dikirim.
+* Memeriksa alamat Gmail penerima.
+* Menulis subjek email.
+* Menulis isi email.
+* Mengunggah atau memilih file final.
+* Menambahkan tautan unduhan.
+* Melakukan preview.
+* Mengirim hasil.
+* Melihat status pengiriman.
+* Mengirim ulang setelah kegagalan.
+* Melihat riwayat email.
+* Mencatat kegagalan dan pesan kesalahan.
+
+Pastikan email dikirim melalui backend dan provider email yang terkonfigurasi.
+
+Gunakan idempotency key atau mekanisme setara agar klik berulang tidak menyebabkan email duplikat.
+
+Tindakan admin harus mencatat siapa yang mengirim, kapan dikirim, dan hasil dari provider.
+
+Status pengiriman harus disinkronkan dengan halaman transaksi pelanggan.
+
+⸻
+
+25. TRANSACTION MANAGEMENT
+
+Admin dapat:
+
+* Melihat daftar transaksi.
+* Mencari transaksi berdasarkan ID atau nomor pesanan.
+* Memfilter berdasarkan tanggal dan status.
+* Melihat nominal dan metode pembayaran.
+* Memeriksa referensi pembayaran.
+* Melihat status gateway.
+* Mengunduh invoice.
+* Mengekspor laporan.
+* Melihat pengembalian dana jika didukung.
+
+Bedakan entitas pesanan dan pembayaran. Satu pesanan dapat memiliki lebih dari satu percobaan pembayaran.
+
+Jangan pernah mengubah status pembayaran menjadi berhasil hanya karena tombol admin ditekan tanpa bukti validasi yang sesuai.
+
+Setiap transaksi harus mempunyai referensi yang dapat diaudit.
+
+⸻
+
+26. CONTENT MANAGEMENT
+
+Jika website memerlukan artikel, pengumuman, atau konten edukasi, sediakan modul untuk:
+
+* Membuat artikel.
+* Mengedit artikel.
+* Mengelola kategori dan tag.
+* Mengunggah media.
+* Menyimpan draft.
+* Mempublikasikan konten.
+* Menjadwalkan publikasi jika didukung.
+* Mengelola FAQ.
+* Mengelola testimoni.
+* Mengelola halaman bantuan.
+
+Konten publik harus diambil dari database dan mengikuti status publikasi.
+
+⸻
+
+27. ANALYTICS DAN LAPORAN
+
+Sediakan statistik berdasarkan data aktual.
+
+Metrik yang dapat ditampilkan:
+
+* Pengguna baru.
+* Jumlah sesi atau kunjungan jika analytics tersedia.
+* Produk yang paling sering dilihat.
+* Produk yang paling sering dipesan.
+* Pesanan berdasarkan status.
+* Pembayaran sukses dan gagal.
+* Pendapatan bersih atau kotor sesuai definisi yang ditetapkan.
+* Pengembalian dana.
+* Rata-rata waktu pengerjaan jika data memadai.
+* Rata-rata waktu pengiriman jika data memadai.
+
+Tambahkan:
+
+* Filter rentang tanggal.
+* Perbandingan periode.
+* Grafik tren.
+* Tabel laporan.
+* Ekspor CSV atau PDF bila tersedia.
+
+Jangan menyebut jumlah page view sebagai jumlah pengguna unik. Jelaskan definisi setiap metrik dan jangan menyajikan data perkiraan sebagai fakta.
+
+⸻
+
+28. NOTIFICATIONS
+
+Buat sistem notifikasi untuk pelanggan dan administrator.
+
+Notifikasi pelanggan dapat mencakup:
+
+* Pembayaran berhasil.
+* Pesanan masuk antrean.
+* Pengerjaan dimulai.
+* Status berubah.
+* Pemeriksaan kualitas.
+* Hasil siap dikirim.
+* Email pengiriman berhasil diproses.
+* Pesanan selesai.
+
+Notifikasi admin dapat mencakup:
+
+* Pesanan baru.
+* Pembayaran terverifikasi.
+* Pengiriman gagal.
+* Pesanan menunggu tindakan.
+* Antrean bertambah.
+* Gangguan integrasi.
+
+Sediakan status sudah dibaca dan belum dibaca.
+
+Notifikasi harus berasal dari kejadian backend yang benar-benar terjadi, bukan dari animasi frontend.
+
+Gunakan mekanisme idempotensi agar satu kejadian tidak membuat banyak notifikasi duplikat.
+
+⸻
+
+29. SETTINGS
+
+Sediakan pengaturan untuk:
+
+* Nama website.
+* Logo dan favicon.
+* Warna tema.
+* Banner.
+* Harga paket.
+* Informasi kontak.
+* Email dukungan.
+* Template email.
+* Format tanggal dan mata uang.
+* Estimasi waktu default.
+* Aturan antrean.
+* Pengaturan pembayaran.
+* Pengaturan email.
+* Kebijakan revisi.
+* Ketentuan komersial.
+* Kebijakan privasi.
+* Syarat dan ketentuan.
+* Profil admin.
+
+Rahasia integrasi hanya boleh disimpan di environment variables atau secret manager yang aman. Jangan pernah mengirim secret key ke browser atau menampilkannya di halaman pengaturan.
+
+⸻
+
+30. ROLE-BASED ACCESS CONTROL
+
+Gunakan sistem RBAC untuk membatasi akses administrator.
+
+Peran awal:
+
+Super Admin
+
+* Akses penuh.
+* Mengelola administrator dan izin.
+* Mengelola

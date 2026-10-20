@@ -1,0 +1,8 @@
+{
+  "name": "Ban Spesialis - Layanan Musik & Audio",
+  "description": "Platform layanan musik, editing audio, dashboard pelanggan dengan sistem antrean otomatis dan admin dashboard 3D claymorphic.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
